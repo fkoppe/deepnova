@@ -1,0 +1,24 @@
+# git
+.gitattributes text
+.gitignore text
+.gitconfig text
+.gitmodules text
+
+# document
+*.md text
+*.css text
+*.html text
+*.txt text
+AUTHORS text
+CHANGELOG text
+CHANGES text
+CONTRIBUTING text
+COPYING text
+INSTALL text
+LICENSE text
+NEWS text
+TODO text
+
+# language
+*.c text eol=lf
+*.h text eol=lf
