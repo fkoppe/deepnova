@@ -10,6 +10,7 @@ target_link_libraries(
     deepnova
     PUBLIC
     darkstar
+    glfw
 )
 
 set(DEEP_VERSION_MAJOR 0 CACHE INTERNAL "")

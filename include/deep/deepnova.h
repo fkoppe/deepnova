@@ -25,6 +25,6 @@
 
 #include <dark/darkstar.h>
 
-#include <deep/surface/surface.h>
+#include <deep/instance/instance.h>
 
 #endif // !defined(___DEEP___DEEPNOVA_H)

@@ -20,20 +20,31 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___INSTANCE_H)
-#define ___DEEP___INSTANCE_H
+#if !defined(___DEEP___SURFACE_HELPER_H)
+#define ___DEEP___SURFACE_HELPER_H
 
 #include <dark/core/std.h>
-#include <dark/memory/allocator.h>
+#include <dark/container/linear_map_struct.h>
 
-typedef struct Deep_Instance Deep_Instance;
+#include <deep/instance/surface.h>
 
-void deep_instance_construct(Dark_Allocator* allocator, Deep_Instance* instance);
-void deep_instance_destruct(Deep_Instance* instance);
+#include "GLFW/glfw3.h"
 
-Deep_Instance* deep_instance_new(Dark_Allocator* allocator);
-void deep_instance_delete(Deep_Instance* instance);
+typedef struct Deep_Surface Deep_Surface;
+struct Deep_Surface
+{
+    bool initialised_is;
+    Dark_Allocator* allocator;
+    Dark_Entropy* entropy;
+    Dark_Linear_Map monitor_map;
+    Dark_Logger* logger;
+};
 
-size_t deep_logger_struct_byte(void);
+Deep_Surface* deep_surface_singleton(void);
 
-#endif // !defined(___DEEP___INSTANCE_H)
+void deep_surface_monitor_callback(GLFWmonitor* monitor, int event);
+
+void deep_surface_monitor_connect(GLFWmonitor* monitor);
+void deep_surface_monitor_disconnect(GLFWmonitor* monitor);
+
+#endif // !defined(___DEEP___SURFACE_HELPER_H)

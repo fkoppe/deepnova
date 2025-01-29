@@ -1,7 +1,0 @@
-target_sources(
-    deepnova
-    PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/instance_struct.h
-    ${CMAKE_CURRENT_LIST_DIR}/instance.h
-    ${CMAKE_CURRENT_LIST_DIR}/surface.h
-)

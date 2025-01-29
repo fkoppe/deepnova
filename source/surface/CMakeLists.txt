@@ -1,6 +1,8 @@
 target_sources(
     deepnova
     PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/instance.c
-    ${CMAKE_CURRENT_LIST_DIR}/surface_module.h
+	${CMAKE_CURRENT_LIST_DIR}/instance_module.h
+    ${CMAKE_CURRENT_LIST_DIR}/surface.c
+    ${CMAKE_CURRENT_LIST_DIR}/surface_helper.c
+    ${CMAKE_CURRENT_LIST_DIR}/surface_helper.h
 )

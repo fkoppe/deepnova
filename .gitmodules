@@ -1,0 +1,3 @@
+[submodule "library/glfw"]
+	path = library/glfw
+	url = https://github.com/fkoppe/glfw.git

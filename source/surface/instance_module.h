@@ -20,53 +20,12 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include "surface_module.h"
+#if !defined(___DEEP___INSTANCE_MODULE_H)
+#define ___DEEP___INSTANCE_MODULE_H
 
-#include <dark/core/core.h>
-#include <dark/memory/memory.h>
+#include <dark/core/std.h>
 
-#include <deep/surface/instance_struct.h>
-#include <deep/surface/surface.h>
+#undef DARK_MODULE
+#define DARK_MODULE "instance"
 
-#undef DARK_UNIT
-#define DARK_UNIT "instance"
-
-void deep_instance_construct(Dark_Allocator* const allocator_, Deep_Instance* const instance_)
-{
-    DARK_ASSERT(NULL != allocator_, DARK_ERROR_NULL);
-    DARK_ASSERT(NULL != instance_, DARK_ERROR_NULL);
-
-    instance_->allocator = allocator_;
-}
-
-void deep_instance_destruct(Deep_Instance* const instance_)
-{
-    DARK_ASSERT(NULL != instance_, DARK_ERROR_NULL);
-
-    //nothing
-}
-
-Deep_Instance* deep_instance_new(Dark_Allocator* const allocator_)
-{
-    DARK_ASSERT(NULL != allocator_, DARK_ERROR_NULL);
-
-    Deep_Instance* const instance = dark_malloc(allocator_, sizeof(Deep_Instance));
-
-    deep_instance_construct(allocator_, instance);
-
-    return instance;
-}
-
-void deep_instance_delete(Deep_Instance* const instance_)
-{
-    DARK_ASSERT(NULL != instance_, DARK_ERROR_NULL);
-
-    deep_instance_destruct(instance_);
-
-    dark_free(instance_->allocator, instance_, sizeof(instance_));
-}
-
-size_t deep_logger_struct_byte(void)
-{
-    return sizeof(Deep_Instance);
-}
+#endif // !defined(___DEEP___INSTANCE_MODULE_H)
