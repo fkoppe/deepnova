@@ -85,28 +85,31 @@ void deep_surface_shutdown(void)
 
     glfwSetMonitorCallback(NULL);
 
-    Dark_Iterator* const iterator = dark_iterator_new_context(surface->allocator, dark_linear_map_iterator_context_byte());
-    deep_surface_monitor_iterator(iterator);
-
-    while (!dark_iterator_done_is(iterator))
+    if(dark_linear_map_size(&surface->monitor_map) > 0)
     {
-        uint8_t* const next = dark_iterator_next(iterator);
-        Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Dark_Uuid4));
+        Dark_Iterator* const iterator = dark_iterator_new_context(surface->allocator, dark_linear_map_iterator_context_byte());
+        deep_surface_monitor_iterator(iterator);
 
-        Dark_Uuid4* const uuid = glfwGetMonitorUserPointer(monitor->raw);
-        glfwSetMonitorUserPointer(monitor->raw, NULL);
+        while (!dark_iterator_done_is(iterator))
+        {
+            uint8_t* const next = dark_iterator_next(iterator);
+            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Dark_Uuid4));
 
-        char buffer[DARK_UUID4_SIZE];
-        const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
+            Dark_Uuid4* const uuid = glfwGetMonitorUserPointer(monitor->raw);
+            glfwSetMonitorUserPointer(monitor->raw, NULL);
 
-        dark_uuid4_write(*uuid, cbuffer);
+            char buffer[DARK_UUID4_SIZE];
+            const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
 
-        DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_COMMENT, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
+            dark_uuid4_write(*uuid, cbuffer);
 
-        dark_free(surface->allocator, uuid, sizeof(Dark_Uuid4));
+            DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_COMMENT, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
+
+            dark_free(surface->allocator, uuid, sizeof(Dark_Uuid4));
+        }
+
+        dark_iterator_delete(iterator);
     }
-
-    dark_iterator_delete(iterator);
 
     glfwTerminate();
 
