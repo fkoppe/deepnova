@@ -5,5 +5,5 @@ target_sources(
     ${CMAKE_CURRENT_LIST_DIR}/deepnova.h
 )
 
-add_subdirectory(event)
+#add_subdirectory(event)
 add_subdirectory(instance)

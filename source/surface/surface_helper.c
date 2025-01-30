@@ -76,9 +76,13 @@ void deep_surface_monitor_connect(GLFWmonitor* const monitor_)
     glfwSetMonitorUserPointer(monitor_, uuid);
 
     Deep_Monitor monitor;
-    monitor.primary_is = glfwGetPrimaryMonitor() == monitor_;
     monitor.name = dark_cstring_to_cbuffer_view(glfwGetMonitorName(monitor_));
     monitor.raw = monitor_;
+
+    if(glfwGetPrimaryMonitor() == monitor_)
+    {
+        monitor.primary_is = true;
+    }
 
     dark_linear_map_insert(&DEEP_SURFACE.monitor_map, uuid, &monitor);
 
@@ -97,6 +101,7 @@ void deep_surface_monitor_disconnect(GLFWmonitor* const monitor_)
     DARK_ASSERT(DEEP_SURFACE.initialised_is, DARK_ERROR_STATE);
 
     Dark_Uuid4* const uuid = glfwGetMonitorUserPointer(monitor_);
+    glfwSetMonitorUserPointer(monitor_, NULL);
 
     char buffer[DARK_UUID4_SIZE];
     const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
