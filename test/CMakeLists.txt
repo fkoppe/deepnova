@@ -1,6 +1,6 @@
 if (NOT TARGET darkstar)
     message(STATUS "Darkstar not found, adding from /external")
-    add_subdirectory(${CMAKE_SOURCE_DIR}/external/darkstar)
+    add_subdirectory(./external/darkstar)
 endif()
 
 macro(deep_test_add filename)
