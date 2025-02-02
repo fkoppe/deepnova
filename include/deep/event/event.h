@@ -20,19 +20,10 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___MONITOR_H)
-#define ___DEEP___MONITOR_H
+#if !defined(___DEEP___EVENT_H)
+#define ___DEEP___EVENT_H
 
-#include <dark/core/std.h>
-#include <dark/char/cbuffer_view.h>
+#include <deep/event/event_data.h>
+#include <deep/event/event_queue.h>
 
-typedef struct Deep_Monitor Deep_Monitor;
-struct Deep_Monitor
-{
-
-    bool primary_is;
-    Dark_Cbuffer_View name;
-    void* raw;
-};
-
-#endif // !defined(___DEEP___MONITOR_H)
+#endif // !defined(___DEEP___EVENT_H)

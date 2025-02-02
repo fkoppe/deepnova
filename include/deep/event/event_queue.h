@@ -20,10 +20,28 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___INSTANCE_H)
-#define ___DEEP___INSTANCE_H
+#if !defined(___DEEP___EVENT_QUEUE_H)
+#define ___DEEP___EVENT_QUEUE_H
 
-#include <deep/instance/monitor.h>
-#include <deep/instance/surface.h>
+#include <dark/log/logger.h>
+#include <dark/memory/allocator.h>
 
-#endif // !defined(___DEEP___INSTANCE_H)
+#include <deep/event/event_data.h>
+
+typedef struct Deep_Event_Queue Deep_Event_Queue;
+
+void deep_event_queue_construct(Dark_Allocator* allocator, Deep_Event_Queue* event_queue, Dark_Logger* logger);
+void deep_event_queue_destruct(Deep_Event_Queue* event_queue);
+
+Deep_Event_Queue* deep_event_queue_new(Dark_Allocator* allocator, Dark_Logger* logger);
+void deep_event_queue_delete(Deep_Event_Queue* event_queue);
+
+size_t deep_event_queue_size(Deep_Event_Queue* event_queue);
+
+void deep_event_queue_insert(Deep_Event_Queue* event_queue, Deep_Event event);
+
+Deep_Event* deep_event_queue_next(Deep_Event_Queue* event_queue);
+
+void deep_event_queue_clear(Deep_Event_Queue* event_queue);
+
+#endif // !defined(___DEEP___EVENT_QUEUE_H)
