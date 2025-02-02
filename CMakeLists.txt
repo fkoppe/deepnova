@@ -6,6 +6,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 
 add_library(deepnova)
 
+set(DEEPNOVA_DIRECTORY ${CMAKE_CURRENT_LIST_DIR} CACHE INTERNAL "")
+
 target_link_libraries(
     deepnova
     PUBLIC

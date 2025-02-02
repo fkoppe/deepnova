@@ -20,13 +20,36 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___DEEPNOVA_H)
-#define ___DEEP___DEEPNOVA_H
+#if !defined(___DEEP___SURFACE_HELPER_H)
+#define ___DEEP___SURFACE_HELPER_H
 
-#include <dark/darkstar.h>
+#include <dark/core/std.h>
+#include <dark/container/linear_map_struct.h>
 
-#include <deep/event/event.h>
-#include <deep/grafic/grafic.h>
-#include <deep/instance/instance.h>
+#include <deep/instance/surface.h>
 
-#endif // !defined(___DEEP___DEEPNOVA_H)
+#include "GLFW/glfw3.h"
+
+typedef struct Deep_Surface_Data Deep_Surface_Data;
+struct Deep_Surface_Data
+{
+    Dark_Uuid4 uuid;
+};
+
+typedef struct Deep_Surface Deep_Surface;
+struct Deep_Surface
+{
+    bool initialised_is;
+    Dark_Allocator* allocator;
+    Dark_Entropy* entropy;
+    Deep_Event_Queue* event_queue;
+    Dark_Logger* logger;
+    Dark_Linear_Map monitor_map;
+};
+
+void deep_surface_monitor_callback(GLFWmonitor* monitor, int event);
+
+void deep_surface_monitor_connect(GLFWmonitor* monitor);
+void deep_surface_monitor_disconnect(GLFWmonitor* monitor);
+
+#endif // !defined(___DEEP___SURFACE_HELPER_H)

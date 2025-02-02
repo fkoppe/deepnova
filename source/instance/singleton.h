@@ -20,13 +20,13 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___DEEPNOVA_H)
-#define ___DEEP___DEEPNOVA_H
+#if !defined(___DEEP___SINGLETON_H)
+#define ___DEEP___SINGLETON_H
 
-#include <dark/darkstar.h>
+#include <dark/core/std.h>
 
-#include <deep/event/event.h>
-#include <deep/grafic/grafic.h>
-#include <deep/instance/instance.h>
+#include "surface_helper.h"
 
-#endif // !defined(___DEEP___DEEPNOVA_H)
+Deep_Surface* deep_surface_singleton(void);
+
+#endif // !defined(___DEEP___SINGLETON_H)

@@ -21,6 +21,7 @@
 ************************************************************************************/
 
 #include "instance_module.h"
+#include "singleton.h"
 #include "surface_helper.h"
 
 #include <dark/container/container.h>
@@ -36,10 +37,11 @@
 #undef DARK_UNIT
 #define DARK_UNIT "surface"
 
-void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* const entropy_, Dark_Logger* const logger_)
+void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* const entropy_, Deep_Event_Queue* const event_queue_, Dark_Logger* const logger_)
 {
     DARK_ASSERT(NULL != allocator_, DARK_ERROR_NULL);
     DARK_ASSERT(NULL != entropy_, DARK_ERROR_NULL);
+    //event_queue_
     //logger_
 
     Deep_Surface* const surface = deep_surface_singleton();
@@ -51,8 +53,9 @@ void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
     surface->initialised_is = true;
     surface->allocator = allocator_;
     surface->entropy = entropy_;
-    dark_linear_map_construct_capacity(allocator_, &surface->monitor_map, (Dark_Compare)dark_uuid4_compare, sizeof(Dark_Uuid4), sizeof(Deep_Monitor), 1);
+    surface->event_queue = event_queue_;
     surface->logger = logger_;
+    dark_linear_map_construct_capacity(allocator_, &surface->monitor_map, (Dark_Compare)dark_uuid4_compare, sizeof(Dark_Uuid4), sizeof(Deep_Monitor), 1);
 
     if(!glfwInit())
     {
@@ -77,8 +80,6 @@ void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
 
 void deep_surface_shutdown(void)
 {
-    deep_surface_update();
-
     Deep_Surface* const surface = deep_surface_singleton();
 
     DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
@@ -93,19 +94,19 @@ void deep_surface_shutdown(void)
         while (!dark_iterator_done_is(iterator))
         {
             uint8_t* const next = dark_iterator_next(iterator);
-            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Dark_Uuid4));
+            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Deep_Surface_Data));
 
-            Dark_Uuid4* const uuid = glfwGetMonitorUserPointer(monitor->raw);
+            Deep_Surface_Data* const data = glfwGetMonitorUserPointer(monitor->raw);
             glfwSetMonitorUserPointer(monitor->raw, NULL);
 
             char buffer[DARK_UUID4_SIZE];
             const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
 
-            dark_uuid4_write(*uuid, cbuffer);
+            dark_uuid4_write(data->uuid, cbuffer);
 
-            DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_COMMENT, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
+            DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_DEBUG, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
 
-            dark_free(surface->allocator, uuid, sizeof(Dark_Uuid4));
+            dark_free(surface->allocator, data, sizeof(Deep_Surface_Data));
         }
 
         dark_iterator_delete(iterator);
@@ -118,6 +119,13 @@ void deep_surface_shutdown(void)
     surface->initialised_is = false;
 
     DARK_LOG_MESSAGE_SHUTDOWN(surface->logger);
+}
+
+bool deep_surface_initialise_is(void)
+{
+    Deep_Surface* const surface = deep_surface_singleton();
+
+    return surface->initialised_is;
 }
 
 void deep_surface_update(void)

@@ -21,6 +21,7 @@
 ************************************************************************************/
 
 #include "instance_module.h"
+#include "singleton.h"
 #include "surface_helper.h"
 
 #include <dark/core/core.h>
@@ -34,19 +35,14 @@
 #undef DARK_UNIT
 #define DARK_UNIT "surface"
 
-static Deep_Surface DEEP_SURFACE = { .initialised_is = false };
-
-Deep_Surface* deep_surface_singleton(void)
-{
-    return &DEEP_SURFACE;
-}
-
 void deep_surface_monitor_callback(GLFWmonitor* const monitor_, const int event_)
 {
     DARK_ASSERT(NULL != monitor_, DARK_ERROR_NULL);
     //event_
 
-    DARK_ASSERT(DEEP_SURFACE.initialised_is, DARK_ERROR_STATE);
+    Deep_Surface* const surface = deep_surface_singleton();
+
+    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
 
     switch (event_)
     {
@@ -66,14 +62,16 @@ void deep_surface_monitor_connect(GLFWmonitor* const monitor_)
 {
     DARK_ASSERT(NULL != monitor_, DARK_ERROR_NULL);
 
-    DARK_ASSERT(DEEP_SURFACE.initialised_is, DARK_ERROR_STATE);
+    Deep_Surface* const surface = deep_surface_singleton();
 
-    Dark_Uuid4* const uuid = dark_malloc(DEEP_SURFACE.allocator, sizeof(Dark_Uuid4));
-    DARK_ASSERT(NULL != uuid, DARK_ERROR_ALLOCATION);
+    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
 
-    *uuid = dark_uuid4_generate(dark_entropy_get_64(DEEP_SURFACE.entropy));
+    Deep_Surface_Data* const data = dark_malloc(surface->allocator, sizeof(Deep_Surface_Data));
+    DARK_ASSERT(NULL != data, DARK_ERROR_ALLOCATION);
 
-    glfwSetMonitorUserPointer(monitor_, uuid);
+    data->uuid = dark_uuid4_generate(dark_entropy_get_64(surface->entropy));
+
+    glfwSetMonitorUserPointer(monitor_, data);
 
     Deep_Monitor monitor;
     monitor.name = dark_cstring_to_cbuffer_view(glfwGetMonitorName(monitor_));
@@ -84,33 +82,53 @@ void deep_surface_monitor_connect(GLFWmonitor* const monitor_)
         monitor.primary_is = true;
     }
 
-    dark_linear_map_insert(&DEEP_SURFACE.monitor_map, uuid, &monitor);
+    dark_linear_map_insert(&surface->monitor_map, &data->uuid, &monitor);
+
+    if(NULL != surface->event_queue)
+    {
+        Deep_Event event;
+        event.type = DEEP_EVENT_TYPE_MONITOR_CONNECTED;
+        event.id.monitor = data->uuid;
+
+        deep_event_queue_insert(surface->event_queue, event);
+    }
 
     char buffer[DARK_UUID4_SIZE];
     const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
 
-    dark_uuid4_write(*uuid, cbuffer);
+    dark_uuid4_write(data->uuid, cbuffer);
 
-    DARK_LOG_F(DEEP_SURFACE.logger, DARK_LOG_LEVEL_COMMENT, "monitor %v connected as %v", dark_cbuffer_to_view(cbuffer), monitor.name);
+    DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_COMMENT, "monitor %v connected as %v", dark_cbuffer_to_view(cbuffer), monitor.name);
 }
 
 void deep_surface_monitor_disconnect(GLFWmonitor* const monitor_)
 {
     DARK_ASSERT(NULL != monitor_, DARK_ERROR_NULL);
 
-    DARK_ASSERT(DEEP_SURFACE.initialised_is, DARK_ERROR_STATE);
+    Deep_Surface* const surface = deep_surface_singleton();
 
-    Dark_Uuid4* const uuid = glfwGetMonitorUserPointer(monitor_);
+    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+
+    Deep_Surface_Data* const data = glfwGetMonitorUserPointer(monitor_);
     glfwSetMonitorUserPointer(monitor_, NULL);
+
+    if(NULL != surface->event_queue)
+    {
+        Deep_Event event;
+        event.type = DEEP_EVENT_TYPE_MONITOR_DISCONNECTED;
+        event.id.monitor = data->uuid;
+
+        deep_event_queue_insert(surface->event_queue, event);
+    }
 
     char buffer[DARK_UUID4_SIZE];
     const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
 
-    dark_uuid4_write(*uuid, cbuffer);
+    dark_uuid4_write(data->uuid, cbuffer);
 
-    DARK_LOG_F(DEEP_SURFACE.logger, DARK_LOG_LEVEL_COMMENT, "monitor %v disconnected", dark_cbuffer_to_view(cbuffer));
+    DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_COMMENT, "monitor %v disconnected", dark_cbuffer_to_view(cbuffer));
 
-    dark_linear_map_erase(&DEEP_SURFACE.monitor_map, uuid);
+    dark_linear_map_erase(&surface->monitor_map, &data->uuid);
 
-    dark_free(DEEP_SURFACE.allocator, uuid, sizeof(Dark_Uuid4));
+    dark_free(surface->allocator, data, sizeof(Dark_Uuid4));
 }

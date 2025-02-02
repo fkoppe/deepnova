@@ -1,9 +1,9 @@
 /************************************************************************************
 *                                                                                   *
-*   deepnova 0.1.0.0 - https://github.com/fkoppe/deepnova                           *
+*   darkstar 0.1.0.0 - https://github.com/fkoppe/darkstar                           *
 *   ************************************************************************        *
 *                                                                                   *
-*   Copyright (C) 2024 Felix Koppe <fkoppe@web.de>                                  *
+*   Copyright (C) 2023-2025 Felix Koppe <fkoppe@web.de>                             *
 *                                                                                   *
 *   This program is free software: you can redistribute it and/or modify            *
 *   it under the terms of the GNU Affero General Public License as published        *
@@ -20,31 +20,18 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___SURFACE_HELPER_H)
-#define ___DEEP___SURFACE_HELPER_H
+#include "instance_module.h"
+#include "singleton.h"
+#include "surface_helper.h"
 
-#include <dark/core/std.h>
-#include <dark/container/linear_map_struct.h>
+#include <deep/instance/instance.h>
 
-#include <deep/instance/surface.h>
+#undef DARK_UNIT
+#define DARK_UNIT "singleton"
 
-#include "GLFW/glfw3.h"
+static Deep_Surface DEEP_SURFACE = { .initialised_is = false };
 
-typedef struct Deep_Surface Deep_Surface;
-struct Deep_Surface
+Deep_Surface* deep_surface_singleton(void)
 {
-    bool initialised_is;
-    Dark_Allocator* allocator;
-    Dark_Entropy* entropy;
-    Dark_Linear_Map monitor_map;
-    Dark_Logger* logger;
-};
-
-Deep_Surface* deep_surface_singleton(void);
-
-void deep_surface_monitor_callback(GLFWmonitor* monitor, int event);
-
-void deep_surface_monitor_connect(GLFWmonitor* monitor);
-void deep_surface_monitor_disconnect(GLFWmonitor* monitor);
-
-#endif // !defined(___DEEP___SURFACE_HELPER_H)
+    return &DEEP_SURFACE;
+}

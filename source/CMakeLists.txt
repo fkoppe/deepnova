@@ -10,4 +10,6 @@ target_precompile_headers(
     ${CMAKE_CURRENT_LIST_DIR}/deep_library.h
 )
 
-add_subdirectory(surface)
+add_subdirectory(event)
+add_subdirectory(grafic)
+add_subdirectory(instance)
