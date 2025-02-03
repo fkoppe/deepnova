@@ -52,9 +52,11 @@ jobs:
         run: |
           git clone https://github.com/fkoppe/darkstar.git ${{ github.workspace }}/library/darkstar
 
-      - name: Set Build Output Directory
-        id: build_dir
-        run: echo "build_output=${{ github.workspace }}/build" >> "$GITHUB_ENV"
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
       - name: Configure CMake
         run: >
