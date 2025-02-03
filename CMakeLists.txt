@@ -37,12 +37,6 @@ set(GLFW_VULKAN_STATIC FALSE CACHE INTERNAL "")
 
 if(DEEP_TEST_ENABLE)
 	enable_testing()
-
-	if (NOT TARGET darkstar)
-    message(STATUS "Darkstar not found, adding from /external")
-    add_subdirectory(${CMAKE_SOURCE_DIR}/external/darkstar)
-	endif()
-
 	add_subdirectory(test)
 endif()
 
