@@ -20,32 +20,36 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___SURFACE_H)
-#define ___DEEP___SURFACE_H
+#if !defined(___DEEP___WINDOW_STRUCT_H)
+#define ___DEEP___WINDOW_STRUCT_H
 
+#include <dark/container/linear_queue_struct.h>
 #include <dark/core/std.h>
 #include <dark/log/logger.h>
 #include <dark/memory/allocator.h>
-#include <dark/random/entropy.h>
-#include <dark/random/uuid4.h>
-#include <dark/tool/iterator.h>
 
+#include <deep/grafic/window.h>
 #include <deep/event/event_queue.h>
-#include <deep/instance/monitor.h>
 
-static const Dark_Error DEEP_ERROR_SURFACE_INITIALISED_NOT = { &DARK_ERROR_STATE, "surface not initialised", NULL };
+#include <GLFW/glfw3.h>
 
-void deep_surface_initialise(Dark_Allocator* allocator, Dark_Entropy* entropy, Deep_Event_Queue* event_queue, Dark_Logger* logger);
-void deep_surface_shutdown(void);
+typedef struct Deep_Window_Data Deep_Window_Data;
+struct Deep_Window_Data
+{
+    size_t id;
+    Deep_Event_Queue* event_queue;
+};
 
-bool deep_surface_initialise_is(void);
+struct Deep_Window
+{
+    Dark_Allocator* allocator;
+    Deep_Window_Settings settings;
+    Deep_Window_Data data;
+    bool open_is;
+    bool fullscreen_is;
+    Deep_Window_Option_Array option_array;
+    GLFWwindow* instance;
+    Dark_Logger* logger;
+};
 
-void deep_surface_update(void);
-
-size_t deep_surface_monitor_count(void);
-Deep_Monitor deep_surface_monitor_by_uuid(Dark_Uuid4 uuid);
-
-void deep_surface_monitor_iterator(Dark_Iterator* iterator);
-size_t deep_surface_monitor_iterator_context_byte(void);
-
-#endif // !defined(___DEEP___SURFACE_H)
+#endif // !defined(___DEEP___WINDOW_STRUCT_H)

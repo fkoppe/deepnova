@@ -20,32 +20,45 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___SURFACE_H)
-#define ___DEEP___SURFACE_H
+#include "grafic_module.h"
 
-#include <dark/core/std.h>
-#include <dark/log/logger.h>
-#include <dark/memory/allocator.h>
-#include <dark/random/entropy.h>
-#include <dark/random/uuid4.h>
-#include <dark/tool/iterator.h>
+#include <dark/core/core.h>
 
-#include <deep/event/event_queue.h>
-#include <deep/instance/monitor.h>
+#include <deep/grafic/grafic.h>
 
-static const Dark_Error DEEP_ERROR_SURFACE_INITIALISED_NOT = { &DARK_ERROR_STATE, "surface not initialised", NULL };
+#undef DARK_UNIT
+#define DARK_UNIT "window_helper"
 
-void deep_surface_initialise(Dark_Allocator* allocator, Dark_Entropy* entropy, Deep_Event_Queue* event_queue, Dark_Logger* logger);
-void deep_surface_shutdown(void);
+int deep_glfw_boolean(const bool b_)
+{
+    if(b_)
+    {
+        return GLFW_TRUE;
+    }
+    else
+    {
+        return GLFW_FALSE;
+    }
+}
 
-bool deep_surface_initialise_is(void);
+void deep_window_callback_set(GLFWwindow* const window_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
 
-void deep_surface_update(void);
-
-size_t deep_surface_monitor_count(void);
-Deep_Monitor deep_surface_monitor_by_uuid(Dark_Uuid4 uuid);
-
-void deep_surface_monitor_iterator(Dark_Iterator* iterator);
-size_t deep_surface_monitor_iterator_context_byte(void);
-
-#endif // !defined(___DEEP___SURFACE_H)
+    /*glfwSetWindowPosCallback(window_->instance, dark_window_callback_window_move);
+    glfwSetWindowSizeCallback(window_->instance, dark_window_callback_window_resize);
+    glfwSetWindowCloseCallback(window_->instance, dark_window_callback_window_close);
+    glfwSetWindowRefreshCallback(window_->instance, dark_window_callback_window_refresh);
+    glfwSetWindowFocusCallback(window_->instance, dark_window_callback_window_focus);
+    glfwSetWindowIconifyCallback(window_->instance, dark_window_callback_window_iconify);
+    glfwSetWindowMaximizeCallback(window_->instance, dark_window_callback_window_maximize);
+    glfwSetWindowContentScaleCallback(window_->instance, dark_window_callback_window_content_scale);
+    glfwSetFramebufferSizeCallback(window_->instance, dark_window_callback_framebuffer_size);
+    glfwSetMouseButtonCallback(window_->instance, dark_window_callback_mouse_button);
+    glfwSetCursorPosCallback(window_->instance, dark_window_callback_cursor_move);
+    glfwSetCursorEnterCallback(window_->instance, dark_window_callback_cursor_enter);
+    glfwSetScrollCallback(window_->instance, dark_window_callback_scroll);
+    glfwSetKeyCallback(window_->instance, dark_window_callback_key);
+    glfwSetCharCallback(window_->instance, dark_window_callback_char);
+    glfwSetDropCallback(window_->instance, dark_window_callback_file_drop);*/
+}

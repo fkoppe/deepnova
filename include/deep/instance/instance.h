@@ -23,6 +23,7 @@
 #if !defined(___DEEP___INSTANCE_H)
 #define ___DEEP___INSTANCE_H
 
+#include <deep/instance/error.h>
 #include <deep/instance/monitor.h>
 #include <deep/instance/surface.h>
 

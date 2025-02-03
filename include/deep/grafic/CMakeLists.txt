@@ -1,0 +1,10 @@
+target_sources(
+    deepnova
+    PRIVATE
+    ${CMAKE_CURRENT_LIST_DIR}/grafic.h
+    ${CMAKE_CURRENT_LIST_DIR}/grafic_data.h
+    ${CMAKE_CURRENT_LIST_DIR}/renderer.h
+    ${CMAKE_CURRENT_LIST_DIR}/renderer_struct.h
+    ${CMAKE_CURRENT_LIST_DIR}/window.h
+    ${CMAKE_CURRENT_LIST_DIR}/window_struct.h
+)
