@@ -40,6 +40,11 @@ if(DEEP_TEST_ENABLE)
 	add_subdirectory(test)
 endif()
 
+if(DEEP_WORKFLOW)
+	include_directories(${DARKSTAR_WORKFLOW_DIR}/include)
+	link_directories(${DARKSTAR_WORKFLOW_DIR}/lib)
+endif()
+
 add_subdirectory(include)
 add_subdirectory(library)
 add_subdirectory(source)
