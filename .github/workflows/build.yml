@@ -58,6 +58,7 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/external/darkstar/install \
             -DDARKSTAR_WORKFLOW_DIR=${{ github.workspace }}/external/darkstar/install
+            -DDARK_WORKFLOW=True
           cmake --build ${{ github.workspace }}/external/darkstar/build --target install --config Release
 
       - name: Set Build Output Directory
