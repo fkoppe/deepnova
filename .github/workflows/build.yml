@@ -66,11 +66,11 @@ jobs:
 
       - name: Configure CMake
         run: >
-          cmake -B ${{ env.build_output }} \
-          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
-          -DDEEP_TEST_ENABLE=True \
+          cmake -B ${{ env.build_output }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DDEEP_TEST_ENABLE=True
           -S ${{ github.workspace }}
 
       - name: Build Project
