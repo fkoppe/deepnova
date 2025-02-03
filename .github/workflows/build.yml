@@ -40,10 +40,6 @@ jobs:
         with:
           submodules: true
 
-      - name: Clone Darkstar
-        run: |
-          git clone https://github.com/fkoppe/darkstar.git ${{ github.workspace }}/external/darkstar
-
       - name: Install Dependencies (Linux Only)
         if: matrix.os == 'ubuntu-latest'
         run: |
@@ -52,14 +48,9 @@ jobs:
             libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev \
             libxext-dev libwayland-dev libxkbcommon-dev libgl1-mesa-dev xorg-dev
 
-      - name: Build and Install Darkstar
+      - name: Clone Darkstar
         run: |
-          cmake -B ${{ github.workspace }}/external/darkstar/build -S ${{ github.workspace }}/external/darkstar \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/external/darkstar/install \
-            -DDARKSTAR_WORKFLOW_DIR=${{ github.workspace }}/external/darkstar/install \
-            -DDARK_WORKFLOW=True
-          cmake --build ${{ github.workspace }}/external/darkstar/build --target install --config Release
+          git clone https://github.com/fkoppe/darkstar.git ${{ github.workspace }}/library/darkstar
 
       - name: Set Build Output Directory
         id: build_dir
