@@ -68,9 +68,9 @@ jobs:
           -DDEEP_WORKFLOW=True
           -S ${{ github.workspace }}
 
-      - name: Build Project
-        run: cmake --build ${{ env.build_output }} --config ${{ matrix.build_type }}
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
 
-      - name: Run Tests
-        working-directory: ${{ env.build_output }}
+      - name: Test
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
         run: ctest --build-config ${{ matrix.build_type }} --verbose --output-on-failure
