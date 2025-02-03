@@ -1,5 +1,5 @@
 if(DEEP_WORKFLOW)
-	add_subdirectory(glfw)
+	add_subdirectory(darkstar)
 endif()
 
 add_subdirectory(glfw)
