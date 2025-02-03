@@ -41,8 +41,8 @@ if(DEEP_TEST_ENABLE)
 endif()
 
 if(DEEP_WORKFLOW)
-	target_include_directories(deepnova ${DARKSTAR_WORKFLOW_DIR}/include)
-	target_link_directories(deepnova ${DARKSTAR_WORKFLOW_DIR}/lib)
+	target_include_directories(deepnova PUBLIC ${DARKSTAR_WORKFLOW_DIR}/include)
+	target_link_directories(deepnova PUBLIC ${DARKSTAR_WORKFLOW_DIR}/lib)
 endif()
 
 add_subdirectory(include)
