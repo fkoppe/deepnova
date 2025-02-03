@@ -16,7 +16,7 @@ int main()
 
         Dark_Allocator* const os_allocator = dark_os_allocator_new();
 
-        deep_surface_initialise(os_allocator, &entropy, NULL);
+        deep_surface_initialise(os_allocator, &entropy, NULL, NULL);
         deep_surface_shutdown();
 
         dark_os_allocator_delete(os_allocator);
