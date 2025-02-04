@@ -130,5 +130,5 @@ void deep_handler_monitor_disconnect(GLFWmonitor* const monitor_)
 
     dark_linear_map_erase(&handler->monitor_map, &data->uuid);
 
-    dark_free(handler->allocator, data, sizeof(Dark_Uuid4));
+    dark_free(handler->allocator, data, sizeof(*data));
 }
