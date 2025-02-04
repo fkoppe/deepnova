@@ -16,12 +16,8 @@ int main()
     {
         Dark_Entropy entropy = dark_entropy_seed();
 
-        Dark_Allocator* const os_allocator = dark_os_allocator_new();
-
-        deep_handler_initialise(os_allocator, &entropy, NULL, NULL);
+        deep_handler_initialise(allocator, &entropy, NULL, NULL);
         deep_handler_shutdown();
-
-        dark_os_allocator_delete(os_allocator);
     }
     //--------------------------
 
