@@ -24,6 +24,7 @@
 
 #include <dark/core/core.h>
 
+#include <deep/core/core.h>
 #include <deep/grafic/grafic.h>
 
 #undef DARK_UNIT

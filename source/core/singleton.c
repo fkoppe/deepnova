@@ -1,9 +1,9 @@
 /************************************************************************************
 *                                                                                   *
-*   deepnova 0.1.0.0 - https://github.com/fkoppe/deepnova                           *
+*   darkstar 0.1.0.0 - https://github.com/fkoppe/darkstar                           *
 *   ************************************************************************        *
 *                                                                                   *
-*   Copyright (C) 2024 Felix Koppe <fkoppe@web.de>                                  *
+*   Copyright (C) 2023-2025 Felix Koppe <fkoppe@web.de>                             *
 *                                                                                   *
 *   This program is free software: you can redistribute it and/or modify            *
 *   it under the terms of the GNU Affero General Public License as published        *
@@ -20,13 +20,18 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___SINGLETON_H)
-#define ___DEEP___SINGLETON_H
+#include "core_module.h"
+#include "singleton.h"
+#include "handler_helper.h"
 
-#include <dark/core/std.h>
+#include <deep/core/core.h>
 
-#include "surface_helper.h"
+#undef DARK_UNIT
+#define DARK_UNIT "singleton"
 
-Deep_Surface* deep_surface_singleton(void);
+static Deep_Handler DEEP_HANDLER = { .initialised_is = false };
 
-#endif // !defined(___DEEP___SINGLETON_H)
+Deep_Handler* deep_handler_singleton(void)
+{
+    return &DEEP_HANDLER;
+}

@@ -1,1 +1,1 @@
-deep_test_add(instance_test)
+deep_test_add(core_test)

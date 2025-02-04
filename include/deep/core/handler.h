@@ -20,8 +20,8 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___SURFACE_H)
-#define ___DEEP___SURFACE_H
+#if !defined(___DEEP___HANDLER_H)
+#define ___DEEP___HANDLER_H
 
 #include <dark/core/std.h>
 #include <dark/log/logger.h>
@@ -30,22 +30,22 @@
 #include <dark/random/uuid4.h>
 #include <dark/tool/iterator.h>
 
+#include <deep/core/monitor.h>
 #include <deep/event/event_queue.h>
-#include <deep/instance/monitor.h>
 
-static const Dark_Error DEEP_ERROR_SURFACE_INITIALISED_NOT = { &DARK_ERROR_STATE, "surface not initialised", NULL };
+static const Dark_Error DEEP_ERROR_HANDLER_INITIALISED_NOT = { &DARK_ERROR_STATE, "handler not initialised", NULL };
 
-void deep_surface_initialise(Dark_Allocator* allocator, Dark_Entropy* entropy, Deep_Event_Queue* event_queue, Dark_Logger* logger);
-void deep_surface_shutdown(void);
+void deep_handler_initialise(Dark_Allocator* allocator, Dark_Entropy* entropy, Deep_Event_Queue* event_queue, Dark_Logger* logger);
+void deep_handler_shutdown(void);
 
-bool deep_surface_initialise_is(void);
+bool deep_handler_initialise_is(void);
 
-void deep_surface_update(void);
+void deep_handler_update(void);
 
-size_t deep_surface_monitor_count(void);
-Deep_Monitor deep_surface_monitor_by_uuid(Dark_Uuid4 uuid);
+size_t deep_handler_monitor_count(void);
+Deep_Monitor deep_handler_monitor_by_uuid(Dark_Uuid4 uuid);
 
-void deep_surface_monitor_iterator(Dark_Iterator* iterator);
-size_t deep_surface_monitor_iterator_context_byte(void);
+void deep_handler_monitor_iterator(Dark_Iterator* iterator);
+size_t deep_handler_monitor_iterator_context_byte(void);
 
-#endif // !defined(___DEEP___SURFACE_H)
+#endif // !defined(___DEEP___HANDLER_H)

@@ -28,7 +28,7 @@
 
 #include <deep/event/event_queue.h>
 #include <deep/grafic/grafic_data.h>
-#include <deep/instance/monitor.h>
+#include <deep/core/monitor.h>
 
 static const Dark_Message DEEP_MESSAGE_WINDOW_OPENED_NOT = { NULL, "window not opened", NULL };
 static const Dark_Message DEEP_MESSAGE_WINDOW_OPENED_ALREADY = { NULL, "window already opened", NULL };

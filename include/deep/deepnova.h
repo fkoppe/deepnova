@@ -27,6 +27,6 @@
 
 #include <deep/event/event.h>
 #include <deep/grafic/grafic.h>
-#include <deep/instance/instance.h>
+#include <deep/core/handler.h>
 
 #endif // !defined(___DEEP___DEEPNOVA_H)

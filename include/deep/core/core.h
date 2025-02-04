@@ -20,12 +20,11 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___INSTANCE_MODULE_H)
-#define ___DEEP___INSTANCE_MODULE_H
+#if !defined(___DEEP___CORE_H)
+#define ___DEEP___CORE_H
 
-#include <dark/core/std.h>
+#include <deep/core/error.h>
+#include <deep/core/handler.h>
+#include <deep/core/monitor.h>
 
-#undef DARK_MODULE
-#define DARK_MODULE "instance"
-
-#endif // !defined(___DEEP___INSTANCE_MODULE_H)
+#endif // !defined(___DEEP___CORE_H)

@@ -20,9 +20,9 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include "instance_module.h"
+#include "core_module.h"
 #include "singleton.h"
-#include "surface_helper.h"
+#include "handler_helper.h"
 
 #include <dark/container/container.h>
 #include <dark/core/core.h>
@@ -30,32 +30,32 @@
 #include <dark/memory/memory.h>
 #include <dark/random/random.h>
 
-#include <deep/instance/instance.h>
+#include <deep/core/handler.h>
 
 #include "GLFW/glfw3.h"
 
 #undef DARK_UNIT
 #define DARK_UNIT "surface"
 
-void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* const entropy_, Deep_Event_Queue* const event_queue_, Dark_Logger* const logger_)
+void deep_handler_initialise(Dark_Allocator* const allocator_, Dark_Entropy* const entropy_, Deep_Event_Queue* const event_queue_, Dark_Logger* const logger_)
 {
     DARK_ASSERT(NULL != allocator_, DARK_ERROR_NULL);
     DARK_ASSERT(NULL != entropy_, DARK_ERROR_NULL);
     //event_queue_
     //logger_
 
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(!surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(!handler->initialised_is, DARK_ERROR_STATE);
 
     DARK_LOG_MESSAGE_INITIALISE(logger_);
 
-    surface->initialised_is = true;
-    surface->allocator = allocator_;
-    surface->entropy = entropy_;
-    surface->event_queue = event_queue_;
-    surface->logger = logger_;
-    dark_linear_map_construct_capacity(allocator_, &surface->monitor_map, (Dark_Compare)dark_uuid4_compare, sizeof(Dark_Uuid4), sizeof(Deep_Monitor), 1);
+    handler->initialised_is = true;
+    handler->allocator = allocator_;
+    handler->entropy = entropy_;
+    handler->event_queue = event_queue_;
+    handler->logger = logger_;
+    dark_linear_map_construct_capacity(allocator_, &handler->monitor_map, (Dark_Compare)dark_uuid4_compare, sizeof(Dark_Uuid4), sizeof(Deep_Monitor), 1);
 
     if(!glfwInit())
     {
@@ -72,31 +72,31 @@ void deep_surface_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
 
     for(size_t i = 0; i < count; i++)
     {
-        deep_surface_monitor_connect(monitor[i]);
+        deep_handler_monitor_connect(monitor[i]);
     }
 
-    glfwSetMonitorCallback(deep_surface_monitor_callback);
+    glfwSetMonitorCallback(deep_handler_monitor_callback);
 }
 
-void deep_surface_shutdown(void)
+void deep_handler_shutdown(void)
 {
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
     glfwSetMonitorCallback(NULL);
 
-    if(dark_linear_map_size(&surface->monitor_map) > 0)
+    if(dark_linear_map_size(&handler->monitor_map) > 0)
     {
-        Dark_Iterator* const iterator = dark_iterator_new_context(surface->allocator, dark_linear_map_iterator_context_byte());
-        deep_surface_monitor_iterator(iterator);
+        Dark_Iterator* const iterator = dark_iterator_new_context(handler->allocator, dark_linear_map_iterator_context_byte());
+        deep_handler_monitor_iterator(iterator);
 
         while (!dark_iterator_done_is(iterator))
         {
             uint8_t* const next = dark_iterator_next(iterator);
-            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Deep_Surface_Data));
+            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Deep_Handler_Data));
 
-            Deep_Surface_Data* const data = glfwGetMonitorUserPointer(monitor->raw);
+            Deep_Handler_Data* const data = glfwGetMonitorUserPointer(monitor->raw);
             glfwSetMonitorUserPointer(monitor->raw, NULL);
 
             char buffer[DARK_UUID4_SIZE];
@@ -104,9 +104,9 @@ void deep_surface_shutdown(void)
 
             dark_uuid4_write(data->uuid, cbuffer);
 
-            DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_DEBUG, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
+            DARK_LOG_F(handler->logger, DARK_LOG_LEVEL_DEBUG, "monitor %v removed", dark_cbuffer_to_view(cbuffer));
 
-            dark_free(surface->allocator, data, sizeof(Deep_Surface_Data));
+            dark_free(handler->allocator, data, sizeof(*data));
         }
 
         dark_iterator_delete(iterator);
@@ -114,49 +114,49 @@ void deep_surface_shutdown(void)
 
     glfwTerminate();
 
-    dark_linear_map_destruct(&surface->monitor_map);
+    dark_linear_map_destruct(&handler->monitor_map);
 
-    surface->initialised_is = false;
+    handler->initialised_is = false;
 
-    DARK_LOG_MESSAGE_SHUTDOWN(surface->logger);
+    DARK_LOG_MESSAGE_SHUTDOWN(handler->logger);
 }
 
-bool deep_surface_initialise_is(void)
+bool deep_handler_initialise_is(void)
 {
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    return surface->initialised_is;
+    return handler->initialised_is;
 }
 
-void deep_surface_update(void)
+void deep_handler_update(void)
 {
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
     glfwPollEvents();
 }
 
-size_t deep_surface_monitor_count(void)
+size_t deep_handler_monitor_count(void)
 {
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
-    return dark_linear_map_size(&surface->monitor_map);
+    return dark_linear_map_size(&handler->monitor_map);
 }
 
-Deep_Monitor deep_surface_monitor_by_uuid(const Dark_Uuid4 uuid_)
+Deep_Monitor deep_handler_monitor_by_uuid(const Dark_Uuid4 uuid_)
 {
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
     Deep_Monitor monitor = { false, dark_cstring_to_cbuffer_view("<not connect>") };
 
-    if(dark_linear_map_contain_is(&surface->monitor_map, &uuid_))
+    if(dark_linear_map_contain_is(&handler->monitor_map, &uuid_))
     {
-        monitor = DARK_LINEAR_MAP_VALUE(&surface->monitor_map, &uuid_, Deep_Monitor);
+        monitor = DARK_LINEAR_MAP_VALUE(&handler->monitor_map, &uuid_, Deep_Monitor);
     }
     else
     {
@@ -165,24 +165,24 @@ Deep_Monitor deep_surface_monitor_by_uuid(const Dark_Uuid4 uuid_)
 
         dark_uuid4_write(uuid_, cbuffer);
 
-        DARK_LOG_F(surface->logger, DARK_LOG_LEVEL_ERROR, "monitor %v is not connected", dark_cbuffer_to_view(cbuffer));
+        DARK_LOG_F(handler->logger, DARK_LOG_LEVEL_ERROR, "monitor %v is not connected", dark_cbuffer_to_view(cbuffer));
     }
 
     return monitor;
 }
 
-void deep_surface_monitor_iterator(Dark_Iterator* const iterator_)
+void deep_handler_monitor_iterator(Dark_Iterator* const iterator_)
 {
     DARK_ASSERT(NULL != iterator_, DARK_ERROR_NULL);
 
-    Deep_Surface* const surface = deep_surface_singleton();
+    Deep_Handler* const handler = deep_handler_singleton();
 
-    DARK_ASSERT(surface->initialised_is, DARK_ERROR_STATE);
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
-    dark_linear_map_iterator(&surface->monitor_map, iterator_);
+    dark_linear_map_iterator(&handler->monitor_map, iterator_);
 }
 
-size_t deep_surface_monitor_iterator_context_byte(void)
+size_t deep_handler_monitor_iterator_context_byte(void)
 {
     return dark_linear_map_iterator_context_byte();
 }

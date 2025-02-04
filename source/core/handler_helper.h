@@ -1,9 +1,9 @@
 /************************************************************************************
 *                                                                                   *
-*   darkstar 0.1.0.0 - https://github.com/fkoppe/darkstar                           *
+*   deepnova 0.1.0.0 - https://github.com/fkoppe/deepnova                           *
 *   ************************************************************************        *
 *                                                                                   *
-*   Copyright (C) 2023-2025 Felix Koppe <fkoppe@web.de>                             *
+*   Copyright (C) 2024 Felix Koppe <fkoppe@web.de>                                  *
 *                                                                                   *
 *   This program is free software: you can redistribute it and/or modify            *
 *   it under the terms of the GNU Affero General Public License as published        *
@@ -20,18 +20,36 @@
 *                                                                                   *
 ************************************************************************************/
 
-#include "instance_module.h"
-#include "singleton.h"
-#include "surface_helper.h"
+#if !defined(___DEEP___HANDLER_HELPER_H)
+#define ___DEEP___HANDLER_HELPER_H
 
-#include <deep/instance/instance.h>
+#include <dark/core/std.h>
+#include <dark/container/linear_map_struct.h>
 
-#undef DARK_UNIT
-#define DARK_UNIT "singleton"
+#include <deep/core/handler.h>
 
-static Deep_Surface DEEP_SURFACE = { .initialised_is = false };
+#include "GLFW/glfw3.h"
 
-Deep_Surface* deep_surface_singleton(void)
+typedef struct Deep_Handler_Data Deep_Handler_Data;
+struct Deep_Handler_Data
 {
-    return &DEEP_SURFACE;
-}
+    Dark_Uuid4 uuid;
+};
+
+typedef struct Deep_Handler Deep_Handler;
+struct Deep_Handler
+{
+    bool initialised_is;
+    Dark_Allocator* allocator;
+    Dark_Entropy* entropy;
+    Deep_Event_Queue* event_queue;
+    Dark_Logger* logger;
+    Dark_Linear_Map monitor_map;
+};
+
+void deep_handler_monitor_callback(GLFWmonitor* monitor, int event);
+
+void deep_handler_monitor_connect(GLFWmonitor* monitor);
+void deep_handler_monitor_disconnect(GLFWmonitor* monitor);
+
+#endif // !defined(___DEEP___HANDLER_HELPER_H)

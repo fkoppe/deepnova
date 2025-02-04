@@ -20,11 +20,13 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___INSTANCE_H)
-#define ___DEEP___INSTANCE_H
+#if !defined(___DEEP___SINGLETON_H)
+#define ___DEEP___SINGLETON_H
 
-#include <deep/instance/error.h>
-#include <deep/instance/monitor.h>
-#include <deep/instance/surface.h>
+#include <dark/core/std.h>
 
-#endif // !defined(___DEEP___INSTANCE_H)
+#include "handler_helper.h"
+
+Deep_Handler* deep_handler_singleton(void);
+
+#endif // !defined(___DEEP___SINGLETON_H)

@@ -27,7 +27,7 @@
 //#include <dark/core/core.h>
 //#include <dark/memory/memory.h>
 
-#include <deep/instance/instance.h>
+#include <deep/core/core.h>
 //#include <deep/event/event.h>
 //#include <deep/event/event_queue_struct.h>
 
