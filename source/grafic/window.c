@@ -153,6 +153,8 @@ void deep_window_open_windowed(Deep_Window* const window_, const Deep_Window_Opt
     //option_array_
     DEEP_ASSERT_WINDOW_EXTEND(window_->settings, extend_);
 
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
+
     DARK_ASSERT_MESSAGE(!window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_ALREADY);
 
     window_->open_is = true;
@@ -183,6 +185,8 @@ void deep_window_open_fullscreen(Deep_Window* const window_, Deep_Window_Option_
 {
     DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
     //monitor_
+
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
 
     DARK_ASSERT_MESSAGE(!window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_ALREADY);
 

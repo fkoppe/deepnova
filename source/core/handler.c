@@ -97,7 +97,7 @@ void deep_handler_shutdown(void)
         while (!dark_iterator_done_is(iterator))
         {
             uint8_t* const next = dark_iterator_next(iterator);
-            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Deep_Handler_Data));
+            Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Dark_Uuid4));
 
             Deep_Handler_Data* const data = glfwGetMonitorUserPointer(monitor->raw);
             glfwSetMonitorUserPointer(monitor->raw, NULL);
