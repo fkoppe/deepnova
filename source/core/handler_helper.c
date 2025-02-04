@@ -66,7 +66,7 @@ void deep_handler_monitor_connect(GLFWmonitor* const monitor_)
 
     DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
-    Deep_Handler_Data* const data = dark_malloc(handler->allocator, sizeof(handler));
+    Deep_Handler_Data* const data = dark_malloc(handler->allocator, sizeof(data));
     DARK_ASSERT(NULL != data, DARK_ERROR_ALLOCATION);
 
     data->uuid = dark_uuid4_generate(dark_entropy_get_64(handler->entropy));

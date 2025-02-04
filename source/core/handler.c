@@ -75,7 +75,7 @@ void deep_handler_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
 
     for(size_t i = 0; i < count; i++)
     {
-        //deep_handler_monitor_connect(monitor[i]);
+        deep_handler_monitor_connect(monitor[i]);
     }
 
     glfwSetMonitorCallback(deep_handler_monitor_callback);
