@@ -12,9 +12,9 @@ int main()
     //----------TEST----------
     DARK_TEST("instance_construct/destruct")
     {
-        //Dark_Entropy entropy = dark_entropy_seed();
+        Dark_Entropy entropy = dark_entropy_seed();
 
-        //Dark_Allocator* const os_allocator = dark_os_allocator_new();
+        Dark_Allocator* const os_allocator = dark_os_allocator_new();
 
         //deep_surface_initialise(os_allocator, &entropy, NULL, NULL);
         //deep_surface_shutdown();
