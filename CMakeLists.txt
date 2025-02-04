@@ -15,6 +15,10 @@ target_link_libraries(
     glfw
 )
 
+###########
+# VERSION #
+###########
+
 set(DEEP_VERSION_MAJOR 0 CACHE INTERNAL "")
 set(DEEP_VERSION_MINOR 1 CACHE INTERNAL "")
 set(DEEP_VERSION_PATCH 0 CACHE INTERNAL "")
@@ -29,16 +33,54 @@ target_compile_definitions(
     ___DEEP_VERSION_PATCH=${DEEP_VERSION_TWEAK}
 )
 
+#######################
+# CONFIGURATION TYPE #
+#######################
+
+set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebug RelWithDebInfo RelTest Release MinSizeRel)
+
+target_compile_options(deepnova
+    PRIVATE
+    $<$<CONFIG:RelWithDebug>:${CMAKE_C_FLAGS_RELWITHDEBINFO} -DDEBUG>
+)
+
+target_link_libraries(deepnova
+    PRIVATE
+    $<$<CONFIG:RelWithDebug>:${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}>
+)
+
+target_compile_options(deepnova
+    PRIVATE
+    $<$<CONFIG:RelTest>:${CMAKE_C_FLAGS_RELEASE}>
+)
+
+target_link_libraries(deepnova
+    PRIVATE
+    $<$<CONFIG:RelTest>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}>
+)
+
+################
+# GLFW OPTIONS #
+################
+
 set(BUILD_SHARED_LIBS FALSE CACHE INTERNAL "")
 set(GLFW_BUILD_EXAMPLES FALSE CACHE INTERNAL "")
 set(GLFW_BUILD_TESTS FALSE CACHE INTERNAL "")
 set(GLFW_BUILD_DOCS FALSE CACHE INTERNAL "")
 set(GLFW_VULKAN_STATIC FALSE CACHE INTERNAL "")
 
+############
+# TESTING #
+############
+
 if(DEEP_TEST_ENABLE)
 	enable_testing()
 	add_subdirectory(test)
 endif()
+
+################
+# SUBDIRECTORY #
+################
 
 add_subdirectory(include)
 add_subdirectory(library)
