@@ -47,41 +47,50 @@ void deep_handler_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
     //logger_
 
     printf("1\n");
-
+fflush(stdout);
     Deep_Handler* const handler = deep_handler_singleton();
     printf("2\n");
+    fflush(stdout);
     DARK_ASSERT(!handler->initialised_is, DARK_ERROR_STATE);
 
     DARK_LOG_MESSAGE_INITIALISE(logger_);
 printf("3\n");
+    fflush(stdout);
     handler->initialised_is = true;
     handler->allocator = allocator_;
     handler->entropy = entropy_;
     handler->event_queue = event_queue_;
     handler->logger = logger_;
     printf("4\n");
+    fflush(stdout);
     dark_linear_map_construct_capacity(allocator_, &handler->monitor_map, (Dark_Compare)dark_uuid4_compare, sizeof(Dark_Uuid4), sizeof(Deep_Monitor), 1);
 printf("5\n");
+    fflush(stdout);
     if(!glfwInit())
     {
         DARK_LOG_CSTRING(logger_, DARK_LOG_LEVEL_ERROR, "glfw initialisation failed");
     }
 printf("6\n");
+    fflush(stdout);
     int count = 0;
     GLFWmonitor** const monitor = glfwGetMonitors(&count);
 printf("7\n");
+    fflush(stdout);
     if(0 == count)
     {
         DARK_LOG_CSTRING(logger_, DARK_LOG_LEVEL_WARN, "no monitor detected");
     }
 printf("8\n");
+    fflush(stdout);
     for(size_t i = 0; i < count; i++)
     {
         deep_handler_monitor_connect(monitor[i]);
     }
 printf("9\n");
+    fflush(stdout);
     glfwSetMonitorCallback(deep_handler_monitor_callback);
 printf("10\n");
+    fflush(stdout);
 }
 
 void deep_handler_shutdown(void)

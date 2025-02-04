@@ -7,6 +7,6 @@ endmacro(deep_test_add)
 
 #-----
 
-add_subdirectory(instance)
+add_subdirectory(core)
 
 #-----
