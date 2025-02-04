@@ -1,4 +1,7 @@
 cmake_minimum_required(VERSION 3.22 FATAL_ERROR)
+
+set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebug RelWithDebInfo RelTest Release MinSizeRel CACHE STRING "")
+
 project(deepnova LANGUAGES C)
 
 set(CMAKE_C_STANDARD 99)
