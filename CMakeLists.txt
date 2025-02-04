@@ -37,27 +37,19 @@ target_compile_definitions(
 # CONFIGURATION TYPE #
 #######################
 
-set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebug RelWithDebInfo RelTest Release MinSizeRel)
-
-target_compile_options(deepnova
-    PRIVATE
-    $<$<CONFIG:RelWithDebug>:${CMAKE_C_FLAGS_RELWITHDEBINFO} -DDEBUG>
+set_target_properties(deepnova PROPERTIES
+    CMAKE_CXX_FLAGS_RELWITHDEBUG "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DDEBUG"
+    CMAKE_C_FLAGS_RELWITHDEBUG "${CMAKE_C_FLAGS_RELWITHDEBINFO} -DDEBUG"
+    CMAKE_EXE_LINKER_FLAGS_RELWITHDEBUG "${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}"
+    CMAKE_CXX_FLAGS_RELTEST "${CMAKE_CXX_FLAGS_RELEASE}"
+    CMAKE_C_FLAGS_RELTEST "${CMAKE_C_FLAGS_RELEASE}"
+    CMAKE_EXE_LINKER_FLAGS_RELTEST "${CMAKE_EXE_LINKER_FLAGS_RELEASE}"
 )
 
-target_link_libraries(deepnova
-    PRIVATE
-    $<$<CONFIG:RelWithDebug>:${CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO}>
-)
-
-target_compile_options(deepnova
-    PRIVATE
-    $<$<CONFIG:RelTest>:${CMAKE_C_FLAGS_RELEASE}>
-)
-
-target_link_libraries(deepnova
-    PRIVATE
-    $<$<CONFIG:RelTest>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}>
-)
+foreach(CONFIG RelWithDebug RelTest)
+    target_compile_definitions(deepnova PRIVATE $<$<CONFIG:${CONFIG}>:${CMAKE_C_FLAGS_${CONFIG}}>)
+    target_link_options(deepnova PRIVATE $<$<CONFIG:${CONFIG}>:${CMAKE_EXE_LINKER_FLAGS_${CONFIG}}>)
+endforeach()
 
 ################
 # GLFW OPTIONS #
