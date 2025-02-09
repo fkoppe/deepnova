@@ -25,8 +25,6 @@
 
 #include <deep/grafic/grafic_data.h>
 #include <deep/grafic/renderer.h>
-#include <deep/grafic/renderer_struct.h>
 #include <deep/grafic/window.h>
-#include <deep/grafic/window_struct.h>
 
 #endif // !defined(___DEEP___GRAFIC_H)

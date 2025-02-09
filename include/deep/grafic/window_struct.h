@@ -31,20 +31,16 @@
 #include <deep/grafic/window.h>
 #include <deep/event/event_queue.h>
 
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-
-typedef struct Deep_Window_Data Deep_Window_Data;
-struct Deep_Window_Data
-{
-    size_t id;
-    Deep_Event_Queue* event_queue;
-};
 
 struct Deep_Window
 {
     Dark_Allocator* allocator;
     Deep_Window_Settings settings;
-    Deep_Window_Data data;
+    Deep_Window* self;
+    size_t id;
+    Deep_Event_Queue* event_queue;
     bool open_is;
     bool fullscreen_is;
     Deep_Window_Option_Array option_array;

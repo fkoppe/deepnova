@@ -27,10 +27,11 @@
 
 #include <deep/grafic/window.h>
 
-#include "GLFW/glfw3.h"
-
 int deep_glfw_boolean(bool b);
 
-void deep_window_callback_set(GLFWwindow* window);
+Deep_Key_Modifier deep_window_key_modifier(int modifier);
+Deep_Key deep_window_key(int key);
+
+void deep_window_callback_set(Deep_Window* window_);
 
 #endif // !defined(___DEEP___WINDOW_HELPER_H)

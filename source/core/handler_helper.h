@@ -28,6 +28,7 @@
 
 #include <deep/core/handler.h>
 
+#define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 
 typedef struct Deep_Handler_Data Deep_Handler_Data;
@@ -40,6 +41,7 @@ typedef struct Deep_Handler Deep_Handler;
 struct Deep_Handler
 {
     bool initialised_is;
+    Dark_Uuid4 primary_uuid;
     Dark_Allocator* allocator;
     Dark_Entropy* entropy;
     Deep_Event_Queue* event_queue;

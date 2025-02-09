@@ -20,33 +20,29 @@
 *                                                                                   *
 ************************************************************************************/
 
-#if !defined(___DEEP___HANDLER_H)
-#define ___DEEP___HANDLER_H
+#if !defined(___DEEP___WINDOW_CALLBACK_H)
+#define ___DEEP___WINDOW_CALLBACK_H
 
 #include <dark/core/std.h>
-#include <dark/log/logger.h>
-#include <dark/memory/allocator.h>
-#include <dark/random/entropy.h>
-#include <dark/random/uuid4.h>
-#include <dark/tool/iterator.h>
 
-#include <deep/core/monitor.h>
-#include <deep/event/event_queue.h>
+#define GLFW_INCLUDE_NONE
+#include <GLFW/glfw3.h>
 
-static const Dark_Error DEEP_ERROR_HANDLER_INITIALISED_NOT = { &DARK_ERROR_STATE, "handler not initialised", NULL };
+void deep_window_callback_window_move(GLFWwindow* window, int x, int y);
+void deep_window_callback_window_resize(GLFWwindow* window, int width, int height);
+void deep_window_callback_window_close(GLFWwindow* window);
+void deep_window_callback_window_refresh(GLFWwindow* window);
+void deep_window_callback_window_focus(GLFWwindow* window, int focused);
+void deep_window_callback_window_iconify(GLFWwindow* window, int iconified);
+void deep_window_callback_window_maximize(GLFWwindow* window, int maximized);
+void deep_window_callback_window_content_scale(GLFWwindow* window, float xscale, float yscale);
+void deep_window_callback_framebuffer_size(GLFWwindow* window, int width, int height);
+void deep_window_callback_mouse_button(GLFWwindow* window, int button, int action, int mods);
+void deep_window_callback_cursor_move(GLFWwindow* window, double x, double y);
+void deep_window_callback_cursor_enter(GLFWwindow* window, int entered);
+void deep_window_callback_scroll(GLFWwindow* window, double x, double y);
+void deep_window_callback_key(GLFWwindow* window, int key, int scancode, int action, int mods);
+void deep_window_callback_char(GLFWwindow* window, unsigned int codepoint);
+void deep_window_callback_file_drop(GLFWwindow* window, int count, const char** path);
 
-void deep_handler_initialise(Dark_Allocator* allocator, Dark_Entropy* entropy, Deep_Event_Queue* event_queue, Dark_Logger* logger);
-void deep_handler_shutdown(void);
-
-bool deep_handler_initialise_is(void);
-
-void deep_handler_update(void);
-
-size_t deep_handler_monitor_count(void);
-Deep_Monitor deep_handler_monitor_primary(void);
-Deep_Monitor deep_handler_monitor_by_uuid(Dark_Uuid4 uuid);
-
-void deep_handler_monitor_iterator(Dark_Iterator* iterator);
-size_t deep_handler_monitor_iterator_context_byte(void);
-
-#endif // !defined(___DEEP___HANDLER_H)
+#endif // !defined(___DEEP___WINDOW_CALLBACK_H)

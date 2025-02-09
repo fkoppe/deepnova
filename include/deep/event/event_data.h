@@ -23,6 +23,7 @@
 #if !defined(___DEEP___EVENT_DATA_H)
 #define ___DEEP___EVENT_DATA_H
 
+#include <dark/container/shared_ref.h>
 #include <dark/core/std.h>
 #include <dark/random/uuid4.h>
 
@@ -234,8 +235,8 @@ struct Deep_Event
     {
         struct
         {
-            size_t x;
-            size_t y;
+            int64_t x;
+            int64_t y;
         } position;
         struct
         {
@@ -261,8 +262,7 @@ struct Deep_Event
         uint32_t codepoint;
         struct
         {
-            const char** paths;
-            size_t count;
+            Dark_Shared_Ref path;
         } file;
         struct
         {

@@ -23,15 +23,14 @@
 #include "grafic_module.h"
 #include "window_helper.h"
 
-//#include <dark/container/container.h>
-//#include <dark/core/core.h>
-//#include <dark/memory/memory.h>
+#include <dark/container/container.h>
+#include <dark/core/core.h>
+#include <dark/memory/memory.h>
 
 #include <deep/core/core.h>
-//#include <deep/event/event.h>
-//#include <deep/event/event_queue_struct.h>
-
+#include <deep/event/event.h>
 #include <deep/grafic/grafic.h>
+#include <deep/grafic/window_struct.h>
 
 #undef DARK_UNIT
 #define DARK_UNIT "window"
@@ -69,8 +68,9 @@ void deep_window_construct(Dark_Allocator* const allocator_, Deep_Window* const 
 
     window_->allocator = allocator_;
     window_->settings = settings_;
-    window_->data.id = id_;
-    window_->data.event_queue = event_queue_;
+    window_->self = window_;
+    window_->id = id_;
+    window_->event_queue = event_queue_;
     window_->open_is = false;
     dark_memset(window_->option_array.data, 0, ___DEEP_WINDOW_OPTION_MAX);
     window_->fullscreen_is = false;
@@ -111,6 +111,8 @@ void deep_window_delete(Deep_Window* const window_)
 Deep_Window_Settings deep_window_settings_get(Deep_Window* const window_)
 {
     DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+
+    //TODO apply new title
 
     return window_->settings;
 }
@@ -169,47 +171,139 @@ void deep_window_open_windowed(Deep_Window* const window_, const Deep_Window_Opt
     window_->instance = glfwCreateWindow(extend_.width, extend_.height, window_->settings.title.data, NULL, NULL);
     DARK_ASSERT_CSTRING(NULL != window_->instance, DEEP_ERROR_GLFW, "failed to open window");
 
-    glfwSetWindowUserPointer(window_->instance, &window_->data);
+    glfwSetWindowUserPointer(window_->instance, window_);
 
-    deep_window_callback_set(window_->instance);
+    deep_window_callback_set(window_);
 
     if (!window_->option_array.data[DEEP_WINDOW_OPTION_VISIBLE])
     {
         glfwHideWindow(window_->instance);
     }
 
-    DARK_IDLOG_CSTRING(window_->logger, window_->data.id, DARK_LOG_LEVEL_COMMENT, "open windowed");
+    DARK_IDLOG_CSTRING(window_->logger, window_->id, DARK_LOG_LEVEL_COMMENT, "open windowed");
 }
 
-void deep_window_open_fullscreen(Deep_Window* const window_, Deep_Window_Option_Array option_array, const Deep_Monitor monitor)
+void deep_window_open_fullscreen(Deep_Window* const window_, const Deep_Window_Option_Array option_array_, const Deep_Monitor monitor)
 {
     DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+    //option_array_
     //monitor_
 
     DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
 
     DARK_ASSERT_MESSAGE(!window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_ALREADY);
 
+    window_->open_is = true;
+    window_->fullscreen_is = false;
+    window_->option_array = option_array_;
 
+    const GLFWvidmode* const mode = glfwGetVideoMode(monitor.raw);
+
+    window_->instance = glfwCreateWindow(mode->width, mode->height, window_->settings.title.data, monitor.raw, NULL);
+    DARK_ASSERT_CSTRING(NULL != window_->instance, DEEP_ERROR_GLFW, "failed to open window");
+
+    glfwSetWindowUserPointer(window_->instance, window_);
+
+    deep_window_callback_set(window_);
+
+    DARK_IDLOG_CSTRING(window_->logger, window_->id, DARK_LOG_LEVEL_COMMENT, "open windowed");
 }
 
-bool deep_window_fullscreen_is(Deep_Window* const window_);
+bool deep_window_fullscreen_is(Deep_Window* const window_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
 
-void deep_window_windowed_set(Deep_Window* const window_, Deep_Grafic_Extend extend);
-void deep_window_fullscreen_set(Deep_Window* const window_, Deep_Monitor monitor);
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
 
-void deep_window_close(Deep_Window* const window_);
-bool deep_window_open_is(Deep_Window* const window_);
+    DARK_ASSERT_MESSAGE(window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_NOT);
 
-void deep_window_windowed_resize(Deep_Window* const window_, Deep_Grafic_Extend extend);
-Deep_Grafic_Extend deep_window_windowed_extend(Deep_Window* const window_);
+    return window_->fullscreen_is;
+}
 
-Deep_Grafic_Extend deep_window_framebuffer_extend(Deep_Window* const window_);
+bool deep_window_close_request_is(Deep_Window* const window_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
 
-void deep_window_show(Deep_Window* const window_);
-void deep_window_hide(Deep_Window* const window_);
-bool deep_window_visible_is(Deep_Window* const window_);
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
 
-void deep_window_title_set(Deep_Window* const window_, Dark_Cbuffer_View title);
+    DARK_ASSERT_MESSAGE(window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_NOT);
 
-size_t deep_window_struct_byte(void);
+    return glfwWindowShouldClose(window_->instance);
+}
+
+void deep_window_close(Deep_Window* const window_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
+
+    DARK_ASSERT_MESSAGE(window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_NOT);
+}
+
+bool deep_window_open_is(Deep_Window* const window_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
+
+    return window_->open_is;
+}
+
+void deep_window_windowed_set(Deep_Window* const window_, const Deep_Grafic_Extend extend_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+    DEEP_ASSERT_WINDOW_EXTEND(window_->settings, extend_);
+
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
+
+    DARK_ASSERT_MESSAGE(window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_NOT);
+
+    DARK_ASSERT_MESSAGE(window_->fullscreen_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_WINDOWED_ALREADY);
+
+    window_->fullscreen_is = false;
+
+    glfwSetWindowMonitor(window_->instance, NULL, 0, 0, extend_.width, extend_.height, 0);
+}
+
+void deep_window_fullscreen_set(Deep_Window* const window_, const Deep_Monitor monitor_)
+{
+    DARK_ASSERT(NULL != window_, DARK_ERROR_NULL);
+    //monitor_
+
+    DARK_ASSERT(deep_handler_initialise_is(), DEEP_ERROR_HANDLER_INITIALISED_NOT);
+
+    DARK_ASSERT_MESSAGE(window_->open_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_OPENED_NOT);
+
+    DARK_ASSERT_MESSAGE(!window_->fullscreen_is, DARK_ERROR_STATE, DEEP_MESSAGE_WINDOW_WINDOWED_ALREADY);
+
+    window_->fullscreen_is = true;
+
+    const GLFWvidmode* const mode = glfwGetVideoMode(monitor_.raw);
+
+    glfwSetWindowMonitor(window_->instance, monitor_.raw, 0, 0, mode->width, mode->height, 0);
+}
+
+void deep_window_windowed_resize(Deep_Window* const window_, const Deep_Grafic_Extend extend_)
+{
+    DARK_UNIMPLEMENTED;
+}
+
+Deep_Grafic_Extend deep_window_windowed_extend(Deep_Window* window)
+{
+    DARK_UNIMPLEMENTED;
+}
+
+Deep_Grafic_Extend deep_window_framebuffer_extend(Deep_Window* window)
+{
+    DARK_UNIMPLEMENTED;
+}
+
+void deep_window_title_set(Deep_Window* window, Dark_Cbuffer_View title)
+{
+    DARK_UNIMPLEMENTED;
+}
+
+size_t deep_window_struct_byte(void)
+{
+    return sizeof(Deep_Window);
+}

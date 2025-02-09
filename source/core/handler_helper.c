@@ -30,10 +30,11 @@
 
 #include <deep/core/core.h>
 
+#define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 
 #undef DARK_UNIT
-#define DARK_UNIT "handler_helper"
+#define DARK_UNIT "handler"
 
 void deep_handler_monitor_callback(GLFWmonitor* const monitor_, const int event_)
 {
@@ -80,6 +81,8 @@ void deep_handler_monitor_connect(GLFWmonitor* const monitor_)
     if(glfwGetPrimaryMonitor() == monitor_)
     {
         monitor.primary_is = true;
+
+        handler->primary_uuid = data->uuid;
     }
 
     dark_linear_map_insert(&handler->monitor_map, &data->uuid, &monitor);

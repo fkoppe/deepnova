@@ -40,7 +40,8 @@ size_t deep_event_queue_size(Deep_Event_Queue* event_queue);
 
 void deep_event_queue_insert(Deep_Event_Queue* event_queue, Deep_Event event);
 
-Deep_Event* deep_event_queue_next(Deep_Event_Queue* event_queue);
+bool deep_event_queue_next_is(Deep_Event_Queue* event_queue);
+Deep_Event deep_event_queue_next(Deep_Event_Queue* event_queue);
 
 void deep_event_queue_clear(Deep_Event_Queue* event_queue);
 

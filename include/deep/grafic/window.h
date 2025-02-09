@@ -59,6 +59,7 @@ typedef struct Deep_Window_Settings Deep_Window_Settings;
 struct Deep_Window_Settings
 {
     Dark_Cbuffer_View title;
+    bool file_drop_is;
     struct
     {
         bool is;
@@ -88,6 +89,7 @@ void deep_window_open_windowed(Deep_Window* window, Deep_Window_Option_Array opt
 void deep_window_open_fullscreen(Deep_Window* window, Deep_Window_Option_Array option_array, Deep_Monitor monitor);
 bool deep_window_fullscreen_is(Deep_Window* window);
 
+bool deep_window_close_request_is(Deep_Window* window);
 void deep_window_close(Deep_Window* window);
 bool deep_window_open_is(Deep_Window* window);
 

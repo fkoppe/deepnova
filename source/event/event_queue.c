@@ -86,11 +86,18 @@ void deep_event_queue_insert(Deep_Event_Queue* const event_queue_, const Deep_Ev
     dark_linear_queue_insert(&event_queue_->queue, &event_);
 }
 
-Deep_Event* deep_event_queue_next(Deep_Event_Queue* const event_queue_)
+bool deep_event_queue_next_is(Deep_Event_Queue* const event_queue_)
 {
     DARK_ASSERT(NULL != event_queue_, DARK_ERROR_NULL);
 
-    return dark_linear_queue_next(&event_queue_->queue);
+    return dark_linear_queue_next_is(&event_queue_->queue);
+}
+
+Deep_Event deep_event_queue_next(Deep_Event_Queue* const event_queue_)
+{
+    DARK_ASSERT(NULL != event_queue_, DARK_ERROR_NULL);
+
+    return *(Deep_Event*)dark_linear_queue_next(&event_queue_->queue);
 }
 
 void deep_event_queue_clear(Deep_Event_Queue* const event_queue_)

@@ -32,6 +32,7 @@
 
 #include <deep/core/handler.h>
 
+#define GLFW_INCLUDE_NONE
 #include "GLFW/glfw3.h"
 
 #undef DARK_UNIT
@@ -53,6 +54,7 @@ void deep_handler_initialise(Dark_Allocator* const allocator_, Dark_Entropy* con
     DARK_LOG_MESSAGE_INITIALISE(logger_);
 
     handler->initialised_is = true;
+    handler->primary_uuid = DARK_UUID4_ZERO;
     handler->allocator = allocator_;
     handler->entropy = entropy_;
     handler->event_queue = event_queue_;
@@ -94,7 +96,7 @@ void deep_handler_shutdown(void)
         Dark_Iterator* const iterator = dark_iterator_new_context(handler->allocator, dark_linear_map_iterator_context_byte());
         deep_handler_monitor_iterator(iterator);
 
-        while (!dark_iterator_done_is(iterator))
+        while (!dark_iterator_next_is(iterator))
         {
             uint8_t* const next = dark_iterator_next(iterator);
             Deep_Monitor* const monitor = (Deep_Monitor*)(next + sizeof(Dark_Uuid4));
@@ -149,29 +151,27 @@ size_t deep_handler_monitor_count(void)
     return dark_linear_map_size(&handler->monitor_map);
 }
 
+Deep_Monitor deep_handler_monitor_primary(void)
+{
+    Deep_Handler* const handler = deep_handler_singleton();
+
+    DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
+
+    DARK_ASSERT(dark_linear_map_size(&handler->monitor_map) > 0, DARK_ERROR_UNDERFLOW);
+    DARK_ASSERT_CSTRING(dark_uuid4_compare(&DARK_UUID4_ZERO, &handler->primary_uuid) != 0, DARK_ERROR_RUNTIME, "no primary monitor");
+
+    return DARK_LINEAR_MAP_VALUE(&handler->monitor_map, &handler->primary_uuid, Deep_Monitor);
+}
+
 Deep_Monitor deep_handler_monitor_by_uuid(const Dark_Uuid4 uuid_)
 {
     Deep_Handler* const handler = deep_handler_singleton();
 
     DARK_ASSERT(handler->initialised_is, DARK_ERROR_STATE);
 
-    Deep_Monitor monitor = { false, dark_cstring_to_cbuffer_view("<not connect>") };
+    DARK_ASSERT_CSTRING(dark_linear_map_contain_is(&handler->monitor_map, &uuid_), DARK_ERROR_RUNTIME, "monitor is not connected");
 
-    if(dark_linear_map_contain_is(&handler->monitor_map, &uuid_))
-    {
-        monitor = DARK_LINEAR_MAP_VALUE(&handler->monitor_map, &uuid_, Deep_Monitor);
-    }
-    else
-    {
-        char buffer[DARK_UUID4_SIZE];
-        const Dark_Cbuffer cbuffer = { DARK_UUID4_SIZE, buffer };
-
-        dark_uuid4_write(uuid_, cbuffer);
-
-        DARK_LOG_F(handler->logger, DARK_LOG_LEVEL_ERROR, "monitor %v is not connected", dark_cbuffer_to_view(cbuffer));
-    }
-
-    return monitor;
+    return DARK_LINEAR_MAP_VALUE(&handler->monitor_map, &uuid_, Deep_Monitor);
 }
 
 void deep_handler_monitor_iterator(Dark_Iterator* const iterator_)
